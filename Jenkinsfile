@@ -12,6 +12,7 @@ pipeline {
         FULL_IMAGE_NAME = "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
         RG              = "demo11"
         NAME            = "lucky-aks-cluster11"
+        SONAR_TOKEN = credentials('sonar-token')
     }
     stages {
         stage('Checkout FROM GIT') {
@@ -19,28 +20,14 @@ pipeline {
                 git branch: 'prod' , url: 'https://github.com/bkrrajmali/enahanced-petclinc-springboot.git'
         }
       }
-        stage('Validate with Maven ') {
+        stage('Maven Build') {
             steps {
-                sh 'mvn validate'
+                sh 'mvn clean package'
             }
         }
-        stage('Compile with Maven ') {
+        
             steps {
-                sh 'mvn compile'
-            }
-        }
-        stage('Maven Package') {
-            steps {
-                 sh 'mvn clean package'
-            }
-        }
-
-        stage('SonarCloud Analysis') {
-            environment {
-                SONAR_TOKEN = credentials('sonar-token')  // your SonarCloud token ID in Jenkins
-            }
-            steps {
-                withSonarQubeEnv('sonarserver') {  // matches the Name in Jenkins → Configure System → SonarQube servers
+                withSonarQubeEnv('sonar-token') {  // matches the Name in Jenkins → Configure System → SonarQube servers
                     sh 'mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}'
                 }
             }
