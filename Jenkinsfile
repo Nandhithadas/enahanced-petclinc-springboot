@@ -29,33 +29,33 @@ pipeline {
                 sh 'mvn compile'
             }
         }
-        stage('Sonar Analysis ') {
-            environment {
-                SCANNER_HOME = tool 'Sonar-scanner'
-            }   
+        stage('Maven Package') {
             steps {
-                withSonarQubeEnv('sonar-token') {
-                    sh '''${SCANNER_HOME}/bin/sonar-scanner \
-                    -Dsonar.organization=bkrrajmali \
-                    -Dsonar.projectName=springbootjavaapp \
-                    -Dsonar.projectKey=springbootjavaapp \
-                    -Dsonar.java.binaries=.
-                  '''
-                }
-            }         
-        }
-         stage('Maven Package ') {
-            steps {
-                sh 'mvn package'
+                 sh 'mvn clean package'
             }
         }
+
+        stage('SonarCloud Analysis') {
+            environment {
+                SONAR_TOKEN = credentials('sonar-token')  // your SonarCloud token ID in Jenkins
+            }
+            steps {
+                withSonarQubeEnv('sonarserver') {  // matches the Name in Jenkins → Configure System → SonarQube servers
+                    sh 'mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}'
+                }
+            }
+        }
+
         stage('Sonar Quality Gate') {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
+
+
+         
         stage('Docker Build') {
             steps {
                 script {
