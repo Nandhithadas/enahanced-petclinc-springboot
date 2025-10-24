@@ -6,12 +6,12 @@ pipeline {
     environment{
         IMAGE_NAME = 'springbootapp'
         IMAGE_TAG = 'latest'
-        TENANT_ID ='ec78375d-0db0-42cf-82a6-2e6403e95936'
-        ACR_NAME = 'springbootdockerreg'
-        ACR_LOGIN_SERVER = 'springbootdockerreg.azurecr.io'
+        TENANT_ID ='9f0886a2-d016-4cc8-8f25-ec95b841aa78'
+        ACR_NAME = 'luckyregistry11'
+        ACR_LOGIN_SERVER = 'luckyregistry11.azurecr.io'
         FULL_IMAGE_NAME = "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
-        RG              = "socgen"
-        NAME            = "myAKSCluster"
+        RG              = "demo11"
+        NAME            = "lucky-aks-cluster11"
     }
     stages {
         stage('Checkout FROM GIT') {
