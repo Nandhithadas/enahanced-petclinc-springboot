@@ -40,7 +40,8 @@ pipeline {
                     -Dsonar.organization=Nandhithadas \
                     -Dsonar.projectName=enahanced-petclinc-springboot \
                     -Dsonar.projectKey=nandhithadas_enahanced-petclinc-springboot \
-                    -Dsonar.java.binaries=.
+                    -Dsonar.java.binaries=. \
+                    -Dsonar.login=${SONAR_TOKEN}
                   '''
                 }
             }         
@@ -53,7 +54,7 @@ pipeline {
         stage('Sonar Quality Gate') {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
+                    waitForQualityGate abortPipeline: true, credentialsId: 'sonartoken'
                 }
             }
         }
