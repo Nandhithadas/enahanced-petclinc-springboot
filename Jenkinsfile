@@ -53,7 +53,7 @@ pipeline {
                 withSonarQubeEnv('sonarserver') {
                     sh '''
                         $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.organization=Nandhithadas \
+                        -Dsonar.organization=nandhithadas \
                         -Dsonar.projectName=Jenkins \
                         -Dsonar.projectKey=nandhithadas_jenkins \
                         -Dsonar.sources=src \
