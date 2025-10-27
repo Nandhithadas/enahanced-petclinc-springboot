@@ -87,15 +87,7 @@ pipeline {
         //     }
         // }
 
-       stage('Docker Login to ACR') {
-    steps {
-        withCredentials([usernamePassword(credentialsId: 'azure-token', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
-            sh """
-                sudo docker login luckyregistry12.azurecr.io -u $AZURE_USERNAME -p $AZURE_PASSWORD
-            """
-        }
-    }
-}
+       
 
         
 
