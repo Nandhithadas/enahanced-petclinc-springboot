@@ -96,7 +96,7 @@ pipeline {
             steps {
                 withCredentials([
                     usernamePassword(credentialsId: 'azure-token', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD'),
-                    string(credentialsId: 'azure-tenant', variable: 'TENANT_ID')
+                    string(credentialsId: 'azure-token', variable: 'TENANT_ID')
                 ]) {
                     script {
                         echo "Logging into Azure Container Registry..."
