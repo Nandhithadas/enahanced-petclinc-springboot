@@ -31,11 +31,12 @@ pipeline {
         // }
         stage('Sonar Analysis ') {
             environment {
+                SONAR_TOKEN = credentials('sonartoken')
                 SCANNER_HOME = tool 'sonarscanner'
             }   
             steps {
                 withSonarQubeEnv('sonarserver') {
-                    sh '''${SCANNER_HOME}/bin/sonarscanner \
+                    sh '''${SCANNER_HOME}/bin/sonar-scanner \
                     -Dsonar.organization=Nandhithadas \
                     -Dsonar.projectName=enahanced-petclinc-springboot \
                     -Dsonar.projectKey=nandhithadas_enahanced-petclinc-springboot \
@@ -49,13 +50,13 @@ pipeline {
                 sh 'mvn package'
             }
         }
-        // stage('Sonar Quality Gate') {
-        //     steps {
-        //         timeout(time: 1, unit: 'MINUTES') {
-        //             waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
-        //         }
-        //     }
-        // }
+        stage('Sonar Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
+                }
+            }
+        }
         // stage('Docker Build') {
         //     steps {
         //         script {
