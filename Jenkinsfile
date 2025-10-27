@@ -1,123 +1,139 @@
 pipeline {
     agent any
-    tools {
-        maven 'maven'
-    }
-    environment{
-        IMAGE_NAME = 'springbootapp'
-        IMAGE_TAG = 'latest'
-        TENANT_ID ='9f0886a2-d016-4cc8-8f25-ec95b841aa78'
-        ACR_NAME = 'luckyregistry11'
-        ACR_LOGIN_SERVER = 'luckyregistry11.azurecr.io'
-        FULL_IMAGE_NAME = "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
-        RG              = "demo11"
-        NAME            = "lucky-aks-cluster11"
-    }
-    stages {
-        stage('Checkout FROM GIT') {
-            steps {
-                git branch: 'prod' , url: 'https://github.com/Nandhithadas/enahanced-petclinc-springboot.git'
-        }
-      }
-        // stage('Validate with Maven ') {
-        //     steps {
-        //         sh 'mvn validate'
-        //     }
-        // }
-        // stage('Compile with Maven ') {
-        //     steps {
-        //         sh 'mvn compile'
-        //     }
-        // }
-        // stage('Sonar Analysis ') {
-        //     environment {
-        //         SONAR_TOKEN = credentials('sonartoken')
-        //         SCANNER_HOME = tool 'sonarscanner'
-        //     }   
-        //     steps {
-        //         withSonarQubeEnv('sonarserver') {
-        //             sh '''${SCANNER_HOME}/bin/sonar-scanner \
-        //             -Dsonar.organization=nandhithadas \
-        //             -Dsonar.projectName=enahanced-petclinc-springboot \
-        //             -Dsonar.projectKey=nandhithadas_enahanced-petclinc-springboot \
-        //             -Dsonar.java.binaries=. \
-        //             -Dsonar.login=${SONAR_TOKEN}
-        //           '''
-        //         }
-        //     }         
-        // }
-        //  stage('Maven Package ') {
-        //     steps {
-        //         sh 'mvn package'
-        //     }
-        // }
-        // stage('Sonar Quality Gate') {
-        //     steps {
-        //          timeout(time: 5, unit: 'MINUTES') {
-        //     // Use abortPipeline: false for first run; later you can switch to true
-        //     waitForQualityGate abortPipeline: false
-        //     }
-        // }
-        // }
-        stage('Docker Build') {
-    steps {
-        script {
-            echo "Building Docker Image......."
-            sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-        }
-    }
-}
 
-        // stage('Azure Login TO ACR') {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
-        //             script {
-        //                 echo "Azure Login Started"
-        //                 sh '''
-        //                 az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
-        //                 az acr login --name $ACR_NAME
-        //                 '''
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Docker Push to ACR') {
-        //     steps {
-        //         script {
-        //             echo "Docker Image Push to ACR"
-        //             sh '''
-        //             docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
-                   
-        //             docker push ${FULL_IMAGE_NAME}
-        //             '''
-        //         }
-        //     }
-        // }
-        // stage('Azure Login TO AKS') {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
-        //             script {
-        //                 echo "Azure Login to AKS"
-        //                 sh '''
-        //                 az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
-        //                 az aks get-credentials --resource-group $RG --name $NAME --overwrite-existing
-        //                 '''
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Deploy to AKS') {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
-        //             script {
-        //                 echo "Azure Login to AKS"
-        //                 sh '''
-        //                 az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
-        //                 kubectl apply -f k8s/sprinboot-deployment.yaml
-        //                 '''
-        //             }
-        //         }
-        //     }
-        // }
+    tools {
+        maven 'maven' // Ensure this matches the Maven installation name in Jenkins
+    }
+
+    environment {
+        ImageName = 'my-app-image'
+        BUILD_TAG = "latest"
+    }
+
+    stages {
+        stage('Checkout From Git') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Nandhithadas/enahanced-petclinc-springboot.git'
+            }
+        }
+
+        stage('Maven Validate') {
+            steps {
+                echo 'Validating the project...'
+                sh 'mvn validate'
+            }
+        }
+
+        stage('Maven Compile') {
+            steps {
+                echo 'Compiling the project...'
+                sh 'mvn compile'
+            }
+        }
+
+        stage('Maven Test') {
+            steps {
+                echo 'Running tests...'
+                sh 'mvn test'
+            }
+        }
+
+        stage('Maven Package') {
+            steps {
+                echo 'Packaging the project...'
+                sh 'mvn package'
+            }
+        }
+
+        stage('SonarCloud Analysis') {
+            environment {
+                SCANNER_HOME = tool 'sonar-scanner' // Matches tool config in Jenkins
+            }
+            steps {
+                withSonarQubeEnv('sonarserver') {
+                    sh '''
+                        $SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.organization=Nandhithadas \
+                        -Dsonar.projectName=Jenkins \
+                        -Dsonar.projectKey=nandhithadas_jenkins \
+                        -Dsonar.sources=src \
+                        -Dsonar.java.binaries=target/classes \
+                        -Dsonar.host.url=https://sonarcloud.io
+                    '''
+                }
+            }
+        }
+
+        stage('Publish Sonar Report') {
+            steps {
+                echo 'Publishing SonarCloud report...'
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    sh '''
+                        mvn clean verify sonar:sonar \
+                        -Dsonar.projectKey=sonarproject456_jenkins789 \
+                        -Dsonar.organization=sonarproject456 \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.login=$SONAR_TOKEN \
+                        -Dsonar.qualitygate.wait=false
+                    '''
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+                sh '''
+                    docker build -t ${ImageName}:${BUILD_TAG} .
+                    docker tag ${ImageName}:${BUILD_TAG} luckyregistry.azurecr.io/${ImageName}:${BUILD_TAG}
+                '''
+            }
+        }
+
+        stage('Trivy Scan') {
+            steps {
+                echo 'Running Trivy scan...'
+                sh '''
+                    trivy image --format table --severity HIGH,CRITICAL \
+                        --output trivy-report.txt luckyregistry.azurecr.io/${ImageName}:${BUILD_TAG}
+                '''
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'trivy-report.txt'
+                }
+            }
+        }
+
+        stage('Login to ACR and Push Image') {
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'azure-sp', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD'),
+                    string(credentialsId: 'azure-tenant', variable: 'TENANT_ID')
+                ]) {
+                    script {
+                        echo "Logging into Azure Container Registry..."
+                        sh '''
+                            az login --service-principal -u "$AZURE_USERNAME" -p "$AZURE_PASSWORD" --tenant "$TENANT_ID"
+                            az acr login --name luckyregistry
+                            docker push luckyregistry.azurecr.io/${ImageName}:${BUILD_TAG}
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    echo 'Deploying to Kubernetes...'
+                    sh '''
+                        az aks get-credentials --resource-group LUCKY --name demo-aks
+                        kubectl apply -f k8s/petclinic.yml
+                        kubectl get all
+                    '''
+                }
+            }
+        }
     }
 }
