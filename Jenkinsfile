@@ -6,7 +6,8 @@ pipeline {
     }
 
     environment {
-        ImageName = 'my-app-image'
+        IMAGE_NAME = 'springbootapp'
+        IMAGE_TAG = 'latest'
         BUILD_TAG = "latest"
         ACR_NAME = 'luckyregistry12'
         ACR_LOGIN_SERVER = 'luckyregistry12.azurecr.io'
