@@ -45,24 +45,24 @@ pipeline {
         //     }
         // }
 
-        stage('SonarCloud Analysis') {
-            environment {
-                SCANNER_HOME = tool 'sonar-scanner' // Matches tool config in Jenkins
-            }
-            steps {
-                withSonarQubeEnv('sonarserver') {
-                    sh '''
-                        $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.organization=nandhithadas \
-                        -Dsonar.projectName=Jenkins \
-                        -Dsonar.projectKey=nandhithadas_jenkins \
-                        -Dsonar.sources=src \
-                        -Dsonar.java.binaries=target/classes \
-                        -Dsonar.host.url=https://sonarcloud.io
-                    '''
-                }
-            }
-        }
+        // stage('SonarCloud Analysis') {
+        //     environment {
+        //         SCANNER_HOME = tool 'sonar-scanner' // Matches tool config in Jenkins
+        //     }
+        //     steps {
+        //         withSonarQubeEnv('sonarserver') {
+        //             sh '''
+        //                 $SCANNER_HOME/bin/sonar-scanner \
+        //                 -Dsonar.organization=nandhithadas \
+        //                 -Dsonar.projectName=Jenkins \
+        //                 -Dsonar.projectKey=nandhithadas_jenkins \
+        //                 -Dsonar.sources=src \
+        //                 -Dsonar.java.binaries=target/classes \
+        //                 -Dsonar.host.url=https://sonarcloud.io
+        //             '''
+        //         }
+        //     }
+        // }
 
         stage('Publish Sonar Report') {
             steps {
@@ -70,8 +70,8 @@ pipeline {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     sh '''
                         mvn clean verify sonar:sonar \
-                        -Dsonar.projectKey=sonarproject456_jenkins789 \
-                        -Dsonar.organization=sonarproject456 \
+                        -Dsonar.projectKey=nandhithadas_jenkins\
+                        -Dsonar.organization=nandhithadas \
                         -Dsonar.host.url=https://sonarcloud.io \
                         -Dsonar.login=$SONAR_TOKEN \
                         -Dsonar.qualitygate.wait=false
@@ -90,20 +90,7 @@ pipeline {
             }
         }
 
-        stage('Trivy Scan') {
-            steps {
-                echo 'Running Trivy scan...'
-                sh '''
-                    trivy image --format table --severity HIGH,CRITICAL \
-                        --output trivy-report.txt luckyregistry.azurecr.io/${ImageName}:${BUILD_TAG}
-                '''
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'trivy-report.txt'
-                }
-            }
-        }
+        
 
         stage('Login to ACR and Push Image') {
             steps {
