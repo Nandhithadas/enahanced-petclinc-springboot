@@ -92,8 +92,8 @@ pipeline {
                 echo 'Building Docker image...'
                 sh '''
                     docker build -t ${ImageName}:${BUILD_TAG} .
-                    docker tag ${ImageName}:${BUILD_TAG} luckyregistry12.azurecr.io/${ImageName}:${BUILD_TAG}
-                '''
+                    docker tag ${IMAGE_NAME}:${BUILD_TAG} ${FULL_IMAGE_NAME}
+                    '''
             }
         }
 
