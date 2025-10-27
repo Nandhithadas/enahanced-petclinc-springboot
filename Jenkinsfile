@@ -122,7 +122,7 @@ pipeline {
                 script {
                     echo 'Deploying to Kubernetes...'
                     sh '''
-                        az aks get-credentials --resource-group jenkinrg --name lucky-aks-cluster11
+                        az aks get-credentials --resource-group jenkinrg --name lucky-aks-cluster12
                         kubectl apply -f k8s/springboot-deployment.yaml
                         kubectl get all
                     '''
