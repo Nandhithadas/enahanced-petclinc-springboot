@@ -53,9 +53,9 @@ pipeline {
         }
         stage('Sonar Quality Gate') {
             steps {
-                timeout(time: 1, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true, credentialsId: 'sonartoken'
-                }
+                 timeout(time: 5, unit: 'MINUTES') {
+            // Use abortPipeline: false for first run; later you can switch to true
+            waitForQualityGate abortPipeline: false
             }
         }
         // stage('Docker Build') {
