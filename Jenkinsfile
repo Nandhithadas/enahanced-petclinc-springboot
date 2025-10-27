@@ -29,28 +29,28 @@ pipeline {
         //         sh 'mvn compile'
         //     }
         // }
-        stage('Sonar Analysis ') {
-            environment {
-                SONAR_TOKEN = credentials('sonartoken')
-                SCANNER_HOME = tool 'sonarscanner'
-            }   
-            steps {
-                withSonarQubeEnv('sonarserver') {
-                    sh '''${SCANNER_HOME}/bin/sonar-scanner \
-                    -Dsonar.organization=nandhithadas \
-                    -Dsonar.projectName=enahanced-petclinc-springboot \
-                    -Dsonar.projectKey=nandhithadas_enahanced-petclinc-springboot \
-                    -Dsonar.java.binaries=. \
-                    -Dsonar.login=${SONAR_TOKEN}
-                  '''
-                }
-            }         
-        }
-         stage('Maven Package ') {
-            steps {
-                sh 'mvn package'
-            }
-        }
+        // stage('Sonar Analysis ') {
+        //     environment {
+        //         SONAR_TOKEN = credentials('sonartoken')
+        //         SCANNER_HOME = tool 'sonarscanner'
+        //     }   
+        //     steps {
+        //         withSonarQubeEnv('sonarserver') {
+        //             sh '''${SCANNER_HOME}/bin/sonar-scanner \
+        //             -Dsonar.organization=nandhithadas \
+        //             -Dsonar.projectName=enahanced-petclinc-springboot \
+        //             -Dsonar.projectKey=nandhithadas_enahanced-petclinc-springboot \
+        //             -Dsonar.java.binaries=. \
+        //             -Dsonar.login=${SONAR_TOKEN}
+        //           '''
+        //         }
+        //     }         
+        // }
+        //  stage('Maven Package ') {
+        //     steps {
+        //         sh 'mvn package'
+        //     }
+        // }
         // stage('Sonar Quality Gate') {
         //     steps {
         //          timeout(time: 5, unit: 'MINUTES') {
