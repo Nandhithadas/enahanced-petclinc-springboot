@@ -92,20 +92,28 @@ pipeline {
 
         
 
-        stage('Login to ACR and Push Image') {
+         stage('Azure Login TO ACR') {
             steps {
-                withCredentials([
-                    usernamePassword(credentialsId: 'azure-token', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD'),
-                    string(credentialsId: 'azure-token', variable: 'TENANT_ID')
-                ]) {
+                withCredentials([usernamePassword(credentialsId: 'azure-token', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
                     script {
-                        echo "Logging into Azure Container Registry..."
+                        echo "Azure Login Started"
                         sh '''
-                            az login --service-principal -u "$AZURE_USERNAME" -p "$AZURE_PASSWORD" --tenant "$TENANT_ID"
-                            az acr login --name luckyregistry12
-                            docker push luckyregistry12.azurecr.io/${ImageName}:${BUILD_TAG}
+                        az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
+                        az acr login --name $ACR_NAME
                         '''
                     }
+                }
+            }
+        }
+    stage('Docker Push to ACR') {
+            steps {
+                script {
+                    echo "Docker Image Push to ACR"
+                    sh '''
+                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
+                   
+                    docker push ${FULL_IMAGE_NAME}
+                    '''
                 }
             }
         }
