@@ -16,34 +16,34 @@ pipeline {
     stages {
         stage('Checkout FROM GIT') {
             steps {
-                git branch: 'prod' , url: 'https://github.com/bkrrajmali/enahanced-petclinc-springboot.git'
+                git branch: 'prod' , url: 'https://github.com/Nandhithadas/enahanced-petclinc-springboot.git'
         }
       }
-        stage('Validate with Maven ') {
-            steps {
-                sh 'mvn validate'
-            }
-        }
-        stage('Compile with Maven ') {
-            steps {
-                sh 'mvn compile'
-            }
-        }
-        // stage('Sonar Analysis ') {
-        //     environment {
-        //         SCANNER_HOME = tool 'Sonarscanner'
-        //     }   
+        // stage('Validate with Maven ') {
         //     steps {
-        //         withSonarQubeEnv('sonarserver') {
-        //             sh '''${SCANNER_HOME}/bin/sonarscanner \
-        //             -Dsonar.organization=Nandhithadas \
-        //             -Dsonar.projectName=springbootjavaapp \
-        //             -Dsonar.projectKey=springbootjavaapp \
-        //             -Dsonar.java.binaries=.
-        //           '''
-        //         }
-        //     }         
+        //         sh 'mvn validate'
+        //     }
         // }
+        // stage('Compile with Maven ') {
+        //     steps {
+        //         sh 'mvn compile'
+        //     }
+        // }
+        stage('Sonar Analysis ') {
+            environment {
+                SCANNER_HOME = tool 'Sonarscanner'
+            }   
+            steps {
+                withSonarQubeEnv('sonarserver') {
+                    sh '''${SCANNER_HOME}/bin/sonarscanner \
+                    -Dsonar.organization=Nandhithadas \
+                    -Dsonar.projectName=enahanced-petclinc-springboot \
+                    -Dsonar.projectKey=nandhithadas_enahanced-petclinc-springboot \
+                    -Dsonar.java.binaries=.
+                  '''
+                }
+            }         
+        }
          stage('Maven Package ') {
             steps {
                 sh 'mvn package'
