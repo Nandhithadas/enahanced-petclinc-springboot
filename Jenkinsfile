@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'springbootapp'
+        IMAGE_NAME = 'my-app-image'
         IMAGE_TAG = 'latest'
         BUILD_TAG = "latest"
         ACR_NAME = 'luckyregistry12'
@@ -45,12 +45,12 @@ pipeline {
         //     }
         // }
 
-        stage('Maven Package') {
-            steps {
-                echo 'Packaging the project...'
-                sh 'mvn package'
-            }
-        }
+        // stage('Maven Package') {
+        //     steps {
+        //         echo 'Packaging the project...'
+        //         sh 'mvn package'
+        //     }
+        // }
 
         // stage('SonarCloud Analysis') {
         //     environment {
