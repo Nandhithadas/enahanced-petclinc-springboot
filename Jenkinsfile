@@ -11,6 +11,7 @@ pipeline {
         ACR_NAME = 'luckyregistry12'
         ACR_LOGIN_SERVER = 'luckyregistry12.azurecr.io'
         FULL_IMAGE_NAME = "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
+        TENANT_ID = "9f0886a2-d016-4cc8-8f25-ec95b841aa78"
         RG              = "jenkinrg"
         NAME            = "lucky-aks-cluster"
     }
