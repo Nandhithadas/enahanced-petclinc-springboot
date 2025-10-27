@@ -64,46 +64,46 @@ pipeline {
         //     }
         // }
 
-        stage('Publish Sonar Report') {
-            steps {
-                echo 'Publishing SonarCloud report...'
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh '''
-                        mvn clean verify sonar:sonar \
-                        -Dsonar.projectKey=nandhithadas_jenkins\
-                        -Dsonar.organization=nandhithadas \
-                        -Dsonar.host.url=https://sonarcloud.io \
-                        -Dsonar.login=$SONAR_TOKEN \
-                        -Dsonar.qualitygate.wait=false
-                    '''
-                }
-            }
-        }
+        // stage('Publish Sonar Report') {
+        //     steps {
+        //         echo 'Publishing SonarCloud report...'
+        //         withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+        //             sh '''
+        //                 mvn clean verify sonar:sonar \
+        //                 -Dsonar.projectKey=nandhithadas_jenkins\
+        //                 -Dsonar.organization=nandhithadas \
+        //                 -Dsonar.host.url=https://sonarcloud.io \
+        //                 -Dsonar.login=$SONAR_TOKEN \
+        //                 -Dsonar.qualitygate.wait=false
+        //             '''
+        //         }
+        //     }
+        // }
 
-        stage('Build Docker Image') {
-            steps {
-                echo 'Building Docker image...'
-                sh '''
-                    docker build -t ${ImageName}:${BUILD_TAG} .
-                    docker tag ${ImageName}:${BUILD_TAG} luckyregistry.azurecr.io/${ImageName}:${BUILD_TAG}
-                '''
-            }
-        }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         echo 'Building Docker image...'
+        //         sh '''
+        //             docker build -t ${ImageName}:${BUILD_TAG} .
+        //             docker tag ${ImageName}:${BUILD_TAG} luckyregistry.azurecr.io/${ImageName}:${BUILD_TAG}
+        //         '''
+        //     }
+        // }
 
         
 
         stage('Login to ACR and Push Image') {
             steps {
                 withCredentials([
-                    usernamePassword(credentialsId: 'azure-sp', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD'),
+                    usernamePassword(credentialsId: 'azure-token', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD'),
                     string(credentialsId: 'azure-tenant', variable: 'TENANT_ID')
                 ]) {
                     script {
                         echo "Logging into Azure Container Registry..."
                         sh '''
                             az login --service-principal -u "$AZURE_USERNAME" -p "$AZURE_PASSWORD" --tenant "$TENANT_ID"
-                            az acr login --name luckyregistry
-                            docker push luckyregistry.azurecr.io/${ImageName}:${BUILD_TAG}
+                            az acr login --name luckyregistry12
+                            docker push luckyregistry12.azurecr.io/${ImageName}:${BUILD_TAG}
                         '''
                     }
                 }
@@ -115,8 +115,8 @@ pipeline {
                 script {
                     echo 'Deploying to Kubernetes...'
                     sh '''
-                        az aks get-credentials --resource-group LUCKY --name demo-aks
-                        kubectl apply -f k8s/petclinic.yml
+                        az aks get-credentials --resource-group jeninrg --name lucky-aks-cluster11
+                        kubectl apply -f k8s/springboot-deployment.yml
                         kubectl get all
                     '''
                 }
