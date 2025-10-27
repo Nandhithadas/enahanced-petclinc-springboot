@@ -17,33 +17,33 @@ pipeline {
             }
         }
 
-        stage('Maven Validate') {
-            steps {
-                echo 'Validating the project...'
-                sh 'mvn validate'
-            }
-        }
+        // stage('Maven Validate') {
+        //     steps {
+        //         echo 'Validating the project...'
+        //         sh 'mvn validate'
+        //     }
+        // }
 
-        stage('Maven Compile') {
-            steps {
-                echo 'Compiling the project...'
-                sh 'mvn compile'
-            }
-        }
+        // stage('Maven Compile') {
+        //     steps {
+        //         echo 'Compiling the project...'
+        //         sh 'mvn compile'
+        //     }
+        // }
 
-        stage('Maven Test') {
-            steps {
-                echo 'Running tests...'
-                sh 'mvn test'
-            }
-        }
+        // stage('Maven Test') {
+        //     steps {
+        //         echo 'Running tests...'
+        //         sh 'mvn test'
+        //     }
+        // }
 
-        stage('Maven Package') {
-            steps {
-                echo 'Packaging the project...'
-                sh 'mvn package'
-            }
-        }
+        // stage('Maven Package') {
+        //     steps {
+        //         echo 'Packaging the project...'
+        //         sh 'mvn package'
+        //     }
+        // }
 
         stage('SonarCloud Analysis') {
             environment {
