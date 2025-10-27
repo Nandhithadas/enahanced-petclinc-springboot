@@ -51,21 +51,22 @@ pipeline {
                 sh 'mvn package'
             }
         }
-        stage('Sonar Quality Gate') {
-            steps {
-                 timeout(time: 5, unit: 'MINUTES') {
-            // Use abortPipeline: false for first run; later you can switch to true
-            waitForQualityGate abortPipeline: false
-            }
-        }
-        // stage('Docker Build') {
+        // stage('Sonar Quality Gate') {
         //     steps {
-        //         script {
-        //             echo "Building Docker Image......."
-        //             docker.build ("${IMAGE_NAME}:${IMAGE_TAG}") 
-        //         }
+        //          timeout(time: 5, unit: 'MINUTES') {
+        //     // Use abortPipeline: false for first run; later you can switch to true
+        //     waitForQualityGate abortPipeline: false
         //     }
         // }
+        // }
+        stage('Docker Build') {
+            steps {
+                script {
+                    echo "Building Docker Image......."
+                    docker.build ("${IMAGE_NAME}:${IMAGE_TAG}") 
+                }
+            }
+        }
         // stage('Azure Login TO ACR') {
         //     steps {
         //         withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
