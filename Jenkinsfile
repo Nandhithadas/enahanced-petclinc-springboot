@@ -121,11 +121,11 @@ pipeline {
            
     steps {
         script {
-            sh """
+            sh '''
                 az aks get-credentials --resource-group jenkinrg --name lucky-aks-cluster11
                 kubectl apply -f ./k8s/springboot-deployment.yaml
                 kubectl get all
-            """
+            '''
         }
     
 }
