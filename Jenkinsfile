@@ -38,12 +38,12 @@ pipeline {
         //     }
         // }
 
-        // stage('Maven Package') {
-        //     steps {
-        //         echo 'Packaging the project...'
-        //         sh 'mvn package'
-        //     }
-        // }
+        stage('Maven Package') {
+            steps {
+                echo 'Packaging the project...'
+                sh 'mvn package'
+            }
+        }
 
         // stage('SonarCloud Analysis') {
         //     environment {
