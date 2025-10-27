@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Checkout From Git') {
             steps {
-                git branch: 'main', url: 'https://github.com/Nandhithadas/enahanced-petclinc-springboot.git'
+                git branch: 'prod', url: 'https://github.com/Nandhithadas/enahanced-petclinc-springboot.git'
             }
         }
 
