@@ -8,6 +8,11 @@ pipeline {
     environment {
         ImageName = 'my-app-image'
         BUILD_TAG = "latest"
+        ACR_NAME = 'luckyregistry12'
+        ACR_LOGIN_SERVER = 'luckyregistry12.azurecr.io'
+        FULL_IMAGE_NAME = "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
+        RG              = "jenkinrg"
+        NAME            = "lucky-aks-cluster"
     }
 
     stages {
