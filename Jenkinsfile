@@ -87,15 +87,15 @@ pipeline {
         //     }
         // }
 
-        stage('Build Docker Image') {
-            steps {
-                echo 'Building Docker image...'
-                sh '''
-                    docker build -t ${ImageName}:${BUILD_TAG} .
-                    docker tag ${IMAGE_NAME}:${BUILD_TAG} ${FULL_IMAGE_NAME}
-                    '''
-            }
+       stage('Docker Login to ACR') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'azure-token', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
+            sh """
+                sudo docker login luckyregistry12.azurecr.io -u $AZURE_USERNAME -p $AZURE_PASSWORD
+            """
         }
+    }
+}
 
         
 
