@@ -1,4 +1,4 @@
-cat > sprinboot-deployment.yaml <<EOF
+cat > k8s/sprinboot-deployment.yaml <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,12 +16,12 @@ spec:
         app: springboot-app
     spec:
       containers:
-      - name: springboot-app
-        image: luckyregistry11.azurecr.io/my-app-image:latest
-        ports:
-        - containerPort: 8080
+        - name: springboot-app
+          image: luckyregistry11.azurecr.io/my-app-image:latest
+          ports:
+            - containerPort: 8080
       imagePullSecrets:
-      - name: acr-secret
+        - name: acr-secret
 
 ---
 apiVersion: v1
@@ -38,7 +38,3 @@ spec:
   selector:
     app: springboot-app
 EOF
-
-kubectl apply -f springboot-deployment.yaml
-kubectl get pods
-kubectl get svc
