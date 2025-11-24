@@ -107,6 +107,7 @@ pipeline {
                 script {
                     echo "Docker Image Push to ACR"
                     sh '''
+                        docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
                         docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
                         docker push ${FULL_IMAGE_NAME}
                     '''
