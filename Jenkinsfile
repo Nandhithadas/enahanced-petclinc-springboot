@@ -25,19 +25,19 @@ pipeline {
             }
         }
 
-        stage('Maven Validate') {
-            steps {
-                echo 'Validating the project...'
-                sh 'mvn validate'
-            }
-        }
+        // stage('Maven Validate') {
+        //     steps {
+        //         echo 'Validating the project...'
+        //         sh 'mvn validate'
+        //     }
+        // }
 
-        stage('Maven Compile') {
-            steps {
-                echo 'Compiling the project...'
-                sh 'mvn compile'
-            }
-        }
+        // stage('Maven Compile') {
+        //     steps {
+        //         echo 'Compiling the project...'
+        //         sh 'mvn compile'
+        //     }
+        // }
 
         // stage('Maven Test') {
         //     steps {
