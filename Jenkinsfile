@@ -90,7 +90,7 @@ pipeline {
 
         stage('Azure Login TO ACR') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'azuretoken', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'azure-token', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
                     script {
                         echo "Azure Login Started"
                         sh '''
