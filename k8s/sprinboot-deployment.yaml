@@ -1,4 +1,4 @@
-cat > springboot-deployment.yaml <<EOF
+cat > sprinboot-deployment.yaml <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
