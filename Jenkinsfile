@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'maven' // Ensure this matches the Maven installation name in Jenkins
+        maven 'maven'
     }
 
     environment {
@@ -13,11 +13,12 @@ pipeline {
         ACR_LOGIN_SERVER = 'luckyregistry11.azurecr.io'
         FULL_IMAGE_NAME = "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
         TENANT_ID = "9f0886a2-d016-4cc8-8f25-ec95b841aa78"
-        RG              = "jenkinrg"
-        NAME            = "lucky-aks-cluster"
+        RG = "jenkinrg"
+        NAME = "lucky-aks-cluster"
     }
 
     stages {
+
         stage('Checkout From Git') {
             steps {
                 git branch: 'prod', url: 'https://github.com/Nandhithadas/enahanced-petclinc-springboot.git'
@@ -54,7 +55,7 @@ pipeline {
 
         stage('SonarCloud Analysis') {
             environment {
-                SCANNER_HOME = tool 'sonar-scanner' // Matches tool config in Jenkins
+                SCANNER_HOME = tool 'sonar-scanner'
             }
             steps {
                 withSonarQubeEnv('sonarserver') {
@@ -77,7 +78,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     sh '''
                         mvn clean verify sonar:sonar \
-                        -Dsonar.projectKey=nandhithadas_jenkins\
+                        -Dsonar.projectKey=nandhithadas_jenkins \
                         -Dsonar.organization=nandhithadas \
                         -Dsonar.host.url=https://sonarcloud.io \
                         -Dsonar.login=$SONAR_TOKEN \
@@ -87,48 +88,42 @@ pipeline {
             }
         }
 
-       
-
-        
-
-         stage('Azure Login TO ACR') {
+        stage('Azure Login TO ACR') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'azure-token', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
                     script {
                         echo "Azure Login Started"
                         sh '''
-                        az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
-                        az acr login --name $ACR_NAME
+                            az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
+                            az acr login --name $ACR_NAME
                         '''
                     }
                 }
             }
         }
-    stage('Docker Push to ACR') {
+
+        stage('Docker Push to ACR') {
             steps {
                 script {
                     echo "Docker Image Push to ACR"
                     sh '''
-                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
-                   
-                    docker push ${FULL_IMAGE_NAME}
+                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
+                        docker push ${FULL_IMAGE_NAME}
                     '''
                 }
             }
         }
 
-    stage('Deploy to Kubernetes') {
-           
-    steps {
-        script {
-            sh '''
-                az aks get-credentials --resource-group jenkinrg --name lucky-aks-cluster11
-                kubectl apply -f ./k8s/springboot-deployment.yaml
-                kubectl get all
-            '''
-        }
-    
-}
-
-
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh '''
+                        az aks get-credentials --resource-group jenkinrg --name lucky-aks-cluster11
+                        kubectl apply -f ./k8s/springboot-deployment.yaml
+                        kubectl get all
+                    '''
+                }
             }
+        }
+    } // end stages
+} // end pipeline
